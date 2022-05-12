@@ -20,6 +20,10 @@ pub trait Scene {
         Ok(())
     }
 
+    fn on_create(&mut self, _ctx: &mut Self::Context) -> sge::ApplicationResult {
+        Ok(true)
+    }
+
     fn on_update(
         &mut self,
         ctx: &mut Self::Context,
@@ -103,10 +107,10 @@ pub struct SceneManager<C> {
 }
 
 impl<C> SceneManager<C> {
-    pub fn new(ctx: C) -> Self {
+    pub fn new(ctx: C, base_scene: Box<dyn Scene<Context = C>>) -> Self {
         Self {
             ctx,
-            scenes: Vec::new(),
+            scenes: vec![base_scene],
             // Kept around to avoid allocating on every frame
             operations: Vec::new(),
         }
@@ -147,6 +151,11 @@ impl<C> SceneManager<C> {
 
 impl<C> sge::Application for SceneManager<C> {
     fn on_create(&mut self) -> sge::ApplicationResult {
+        for scene in &mut self.scenes {
+            if !scene.on_create(&mut self.ctx)? {
+                return Ok(false);
+            }
+        }
         // If there are no scenes, quit
         Ok(!self.scenes.is_empty())
     }
