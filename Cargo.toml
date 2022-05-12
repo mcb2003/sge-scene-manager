@@ -1,0 +1,12 @@
+[package]
+name = "sge-scene-manager"
+version = "0.1.0"
+authors = ["Michael Connor Buchan <mikey@blindcomputing.org>"]
+description = "A scene manager for the Simple Game Engine"
+license = "MIT"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+sge = { git = "https://github.com/mcb2003/sge2" }
